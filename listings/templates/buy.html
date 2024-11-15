@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Properties | RealEstateHub</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* Ensure uniform card height */
+        .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 250px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Include Header -->
+    {% include 'header.html' %}
+
+     <!-- Display messages if any -->
+     <div class="container mt-4">
+        {% if messages %}
+            <div class="alert alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Buy Properties Intro Section -->
+    <section class="container mt-5">
+        <div class="text-center">
+            <h1>Find Your Dream Property</h1>
+            <p>Explore a curated selection of exclusive properties in top locations. Whether you're looking for a modern apartment, a luxury villa, or a cozy cottage, RealEstateHub has options to suit every preference and budget.</p>
+        </div>
+    </section>
+
+    <!-- Buy Properties Section -->
+    <section class="buy-properties container mt-5">
+        <h2 class="text-center mb-4">Properties for Sale</h2>
+        <div class="row">
+            {% for property in properties %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <!-- Display property image -->
+                        <img src="{{ property.image.url }}" class="card-img-top" alt="{{ property.title }}">
+                        <div class="card-body">
+                            <!-- Display property title -->
+                            <h5 class="card-title">{{ property.title }}</h5>
+                            <!-- Display property description -->
+                            <p class="card-text">{{ property.description }}</p>
+                            <!-- Display property price -->
+                            <p class="card-text"><strong>Price:</strong> ${{ property.price }}</p>
+                            <!-- Link to view more details -->
+                            <a href="#" class="btn btn-primary">View Details</a>
+                            <!-- Edit and Delete buttons -->
+<div class="mt-2">
+    <a href="{% url 'edit_property' property.id %}" class="btn btn-warning btn-sm">Edit</a>
+    <a href="{% url 'delete_property' property.id %}" 
+       class="btn btn-danger btn-sm"
+       onclick="return confirm('Are you sure you want to delete this property? This action cannot be undone.');">
+       Delete
+    </a>
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No properties available for sale.</p>
+            {% endfor %}
+        </div>
+    </section>
+    
+
+    <!-- Include Footer -->
+    {% include 'footer.html' %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

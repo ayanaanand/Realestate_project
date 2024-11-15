@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Stream | RealEstateHub</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Layout styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 1100px;
+        }
+        .video-container {
+            margin-top: 5px;
+            overflow: hidden;
+            
+        }
+        .chatbox, .sidebar, .events {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 8px;
+            
+        }
+        .chatbox textarea, .chatbox input {
+            width: 100%;
+            resize: none;
+        }
+        .chat-messages {
+            height:250px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .chat-messages p {
+            margin: 0;
+            padding: 8px;
+            background: #e9e9f9;
+            border-radius: 10px;
+            margin-bottom: 5px;
+        }
+        .chat-messages p.own-message {
+            background: #d4f4dd;
+            text-align: right;
+        }
+        .sidebar h4 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .sidebar p {
+            color: #666;
+        }
+        .events h5 {
+            color: #444;
+            margin-bottom: 10px;
+        }
+        /* Add spacing above the footer */
+        .footer-space {
+            margin-top: 80px;
+        }
+        /* Responsive design */
+        @media (max-width: 770px) {
+            .video-container iframe {
+                height: 500px;
+            }
+            .chatbox {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Include -->
+    {% include 'header.html' %}
+
+    <!-- Live Stream Section -->
+    <section class="container mt-5">
+        <h2 class="text-center mb-4">Live Property Showcase</h2>
+        <!-- New Paragraph -->
+        <p class="text-center mb-4">Join our live showcase to explore exclusive properties with real-time virtual tours, interactive features, and detailed insights.</p>
+
+        <div class="row">
+            <!-- Video Stream Section -->
+            <div class="col-md-8">
+                <div class="video-container text-center">
+                    <iframe width="100%" height="500" src="https://www.youtube.com/embed/YOUR_LIVE_VIDEO_ID?autoplay=1"
+                            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+
+                <!-- Chatbox Section -->
+                <div class="chatbox mt-4">
+                    <h5>Live Chat</h5>
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Chat messages will be dynamically loaded here -->
+                    </div>
+                    <form id="chat-form" method="POST">
+                        {% csrf_token %}
+                        <input type="text" class="form-control chat-input mb-2" id="user_name" name="user_name" placeholder="Enter your name" required>
+                        <textarea class="form-control chat-input" id="message" name="message" placeholder="Type your message..." required></textarea>
+                        <button type="submit" class="btn btn-primary btn-sm mt-2">Send</button>
+                    </form>
+                    <button class="btn btn-danger btn-clear mt-2" onclick="clearChat()">Clear Chat</button>
+                </div>
+            </div>
+
+            <!-- Sidebar Section -->
+            <div class="col-md-4">
+                <div class="sidebar mb-4">
+                    <h4>Property Details</h4>
+                    <p><strong>Location:</strong> New York City, NY</p>
+                    <p><strong>Price:</strong> $1,200,000</p>
+                    <p><strong>Description:</strong> A spacious 3-bedroom apartment with modern amenities and a city skyline view.</p>
+                </div>
+
+                <div class="sidebar mb-4">
+                    <h5>Upcoming Live Tours</h5>
+                    <ul>
+                        <li><strong>Property Tour A:</strong> 5th Nov 2023, 11:00 AM</li>
+                        <li><strong>Property Tour B:</strong> 12th Nov 2023, 1:00 PM</li>
+                        <li><strong>Property Tour C:</strong> 19th Nov 2023, 3:00 PM</li>
+                    </ul>
+                </div>
+
+                <div class="sidebar mb-4">
+                    <h4>Property Details</h4>
+                    <p><strong>Location:</strong> New York City, NY</p>
+                    <p><strong>Price:</strong> $1,200,000</p>
+                    <p><strong>Description:</strong> A spacious 3-bedroom apartment with modern amenities and a city skyline view.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Include with Spacing -->
+    <div class="footer-space"></div>
+    {% include 'footer.html' %}
+
+    <!-- JavaScript for AJAX and Clear Chat -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function loadNewMessages() {
+            $.ajax({
+                url: '{% url "get-new-messages" %}',
+                dataType: 'json',
+                success: function(data) {
+                    let chatMessages = $('#chat-messages');
+                    chatMessages.empty();
+                    data.new_messages.forEach(function(message) {
+                        let messageClass = message.user_name === $('#user_name').val() ? 'own-message' : '';
+                        chatMessages.append('<p class="' + messageClass + '"><strong>' + message.user_name + ':</strong> ' + message.message + '</p>');
+                    });
+                    chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                }
+            });
+        }
+
+        function clearChat() {
+            $.ajax({
+                url: '{% url "clear-chat" %}',
+                type: 'POST',
+                data: { csrfmiddlewaretoken: '{{ csrf_token }}' },
+                success: function() {
+                    $('#chat-messages').empty();
+                }
+            });
+        }
+
+        setInterval(loadNewMessages, 3000);
+
+        $('#chat-form').submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '{% url "live-stream" %}',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function() {
+                    $('#message').val('');
+                    loadNewMessages();
+                }
+            });
+        });
+
+        loadNewMessages();
+    </script>
+</body>
+</html>

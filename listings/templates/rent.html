@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent Properties | RealEstateHub</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom CSS for uniform card size */
+        .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Include Header -->
+    {% include 'header.html' %}
+     <!-- Display messages if any -->
+     <div class="container mt-4">
+        {% if messages %}
+            <div class="alert alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Rent Properties Intro Section -->
+    <section class="container mt-5">
+        <div class="text-center">
+            <h1>Find Your Ideal Rental Property</h1>
+            <p>Explore a wide variety of rental properties, from cozy apartments to spacious houses. Whether you're looking for a city apartment or a peaceful retreat, we have options for every need and budget.</p>
+        </div>
+    </section>
+
+    <!-- Rent Properties Section -->
+    <section class="rent-properties container mt-5">
+        <h2 class="text-center mb-4">Properties for Rent</h2>
+        <div class="row">
+            {% for property in properties %}
+            <!-- Property Card -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{{ property.image.url }}" class="card-img-top" alt="{{ property.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ property.title }}</h5>
+                        <p class="card-text">{{ property.description }}</p>
+                        <p class="card-text"><strong>Price:</strong> {{ property.price }}</p>
+                        <!-- View Details button -->
+                        <a href="{% url 'property_details' property.id %}" class="btn btn-primary mt-auto">View Details</a>
+                        
+                        <!-- Edit and Delete buttons -->
+                        <div class="mt-2">
+                            <a href="{% url 'edit_property' property.id %}" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="{% url 'delete_property' property.id %}" 
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to delete this property? This action cannot be undone.');">
+                               Delete
+                            </a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <p>No properties available for rent.</p>
+            {% endfor %}
+        </div>
+    </section>
+    
+
+    <!-- Include Footer -->
+    {% include 'footer.html' %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

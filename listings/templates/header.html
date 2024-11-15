@@ -1,0 +1,141 @@
+{% load static %}
+<header>
+    <style>
+        /* Styling adjustments for header and logo */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between logo and text */
+        }
+
+        /* Logo image styling */
+        header img {
+            height: 50px; /* Adjust logo height */
+            width: auto;
+            display: inline-block;
+            vertical-align: middle; /* Aligns image vertically with text */
+        }
+
+        /* Styling for navigation links */
+        nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 12px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #555;
+            border-radius: 5px;
+        }
+
+        /* Dropdown menu styling */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 5px 0;
+            min-width: 150px;
+            border-radius: 5px;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 8px 12px;
+            color: #fff;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+
+        /* Show dropdown content on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            nav {
+                flex-direction: column;
+                width: 100%;
+            }
+            .dropdown-content {
+                position: static;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header h1 {
+                font-size: 1.2em;
+            }
+            nav a {
+                padding: 6px 10px;
+            }
+            header img {
+                height: 40px; /* Adjust logo size for smaller screens */
+            }
+        }
+    </style>
+
+    <h1>
+        <!-- Add the logo image -->
+        <img src="{% static 'img/logo.png' %}" alt="Real Estate Logo">
+        Welcome to Real Estate
+    </h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="#about-us">About Us</a>
+        <a href="/contact">Contact Us</a>
+
+        <!-- Property Listings Dropdown -->
+        <div class="dropdown">
+            <a href="#" class="dropdown-btn">Property List</a>
+            <div class="dropdown-content">
+                <a href="/buy">Buy</a>
+                <a href="/sell">Sell</a>
+                <a href="/rent">Rent</a>
+            </div>
+        </div>
+
+        <!-- Online Channel Dropdown -->
+        <div class="dropdown">
+            <a href="#" class="dropdown-btn">Online Channel</a>
+            <div class="dropdown-content">
+                <a href="/live-stream">Live Streaming</a>
+            </div>
+        </div>
+    </nav>
+</header>
